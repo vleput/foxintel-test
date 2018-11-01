@@ -1,0 +1,29 @@
+{
+  "name": "foxintel-test",
+  "version": "0.0.0",
+  "description": "Foxintelligence train ticket parser",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vleput/foxintel-test.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint *.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "husky": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": "npm run lint"
+  },
+  "author": "vlp",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "husky": "^1.1.2",
+    "lint-staged": "^8.0.4"
+  }
+}
