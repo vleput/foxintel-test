@@ -48,27 +48,41 @@ const getRoundTrips = (html) => {
     .reduce((acc, value) => acc.concat(value.textContent.trim()), []);
 
   const productDetails = html.querySelectorAll('.product-details');
+
   return Object.values(productDetails).reduce((acc, product, index) => {
     const travelWay = product.querySelector('.travel-way').textContent.trim();
     const date = travelDatesList[index] ? helpers.formatDate(travelDatesList[index]) : null;
+
     const departureTime = product
       .querySelector('.origin-destination-hour.segment-departure')
       .textContent.trim().replace('h', ':');
     const arrivalTime = product
       .querySelector('.origin-destination-hour.segment-arrival')
       .textContent.trim().replace('h', ':');
+
     const departureStation = product
       .querySelector('.origin-destination-station.segment-departure')
       .textContent.trim();
     const arrivalStation = product
       .querySelector('.origin-destination-station.segment-arrival')
       .textContent.trim();
+
     const segments = product.querySelectorAll('tbody > tr > .segment');
     const type = segments[0].textContent.trim();
     const number = segments[1].textContent.trim();
 
-    // TODO: need to handle passengers after figuring out in which case they need to be
-    // in the output
+    const passengersDetails = product.nextElementSibling.querySelectorAll('tbody > tr');
+    const passengers = Object.values(passengersDetails).reduce((a, row) => {
+      const passengerObject = {};
+      if (row.querySelector('.arrow')) {
+        passengerObject.age = row.querySelector('.arrow').lastChild.textContent.trim();
+        const ticketDetails = row.querySelector('.arrow').nextElementSibling.textContent.trim();
+        if (ticketDetails.includes('échangeable')) {
+          passengerObject.type = 'échangeable';
+        }
+      }
+      return Object.keys(passengerObject).length !== 0 ? a.concat(passengerObject) : a;
+    }, []);
 
     return acc.concat({
       type: travelWay,
@@ -81,6 +95,7 @@ const getRoundTrips = (html) => {
           arrivalStation,
           type,
           number,
+          passengers,
         },
       ],
     });

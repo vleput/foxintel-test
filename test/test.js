@@ -4,6 +4,7 @@ const assert = require('assert');
 const fs = require('fs');
 const jsdom = require('jsdom');
 const helpers = require('../src/helpers');
+const htmlToJson = require('../src/main');
 const {
   getCode,
   getName,
@@ -53,5 +54,15 @@ describe('Parser', () => {
     const invalidString = validHtmlString.replace(/product-details/g, '');
     const invalidHtml = new JSDOM(invalidString).window.document;
     assert.deepEqual(getRoundTrips(invalidHtml), []);
+  });
+
+  it('should succeed returning the right json output', () => {
+    const json = htmlToJson(validHtmlString);
+    const result = {
+      status: 'ok',
+      result: json,
+    };
+    const sampleResult = fs.readFileSync('output/example-result.json', 'utf8');
+    assert.deepEqual(JSON.stringify(result, null, 2), sampleResult);
   });
 });
